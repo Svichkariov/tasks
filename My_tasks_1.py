@@ -18,7 +18,10 @@ def div_int_rem(first: float, second: float) -> Tuple[float, float, float]:
 
 # Обменять два целочисленных значение с помощью битового xor не используя промежуточноые переменные.
 def xor_swap(first: int, second: int) -> int:
-    return (first ^ second)
+    first = first ^ second
+    second = first ^ second
+    first = first ^ second
+    return first, second
 
 
 # Вернуть наименьшее число, используя условный оператор.
@@ -38,7 +41,7 @@ def div_shift_2_8_32(value: int) -> Tuple[int, int, int]:
 
 # Реализовать операцию возведения в степень остатка от деления.
 def exponentiation(divident: float, divider: float, power: float) -> float:
-    return (divident % divider)**power
+    return (divident % divider) ** power
 
 
 # Определить знак 32-битного числа с помощью операции &.
@@ -48,17 +51,16 @@ def sign(value: int) -> int:
 
 # Умножить целочисленное значение на -1 с помощью битовых операций и сложения.
 def change_sign(value: int) -> int:
-     return~value + 1
+     return ~value + 1
 
 
 # Возвратить True, если хотя бы один четный бит 32-х битного числа установлен в 1.
 def check_32_even_bit_set(value: int) -> bool:
-    j = 0
     for i in range(0, 32, 2):
         if value & (1 << i):
-            j += 1
-            break
-    return True if j > 0 else False
+            return True
+        else:
+            return False
 
 
 # Посчитать количество бит в 32-х битном числе, установленных в ноль.
@@ -90,8 +92,7 @@ def clamp(value: float, low: float, high: float) -> float:
         return low
     elif value <= high:
         return value
-    else:
-        return high
+    return high
 
 
 
@@ -102,15 +103,13 @@ def clamp_any(value: float, low: float, high: float) -> float:
             return low
         elif value <= high:
             return value
-        else:
-            return high
+        return high
     else:
         if value >= high:
             return low
         elif value >= high:
             return value
-        else:
-            return high
+        return high
 
 
 # Вернуть True, если число нечетно и входит в интервал от -10 до 10.
@@ -125,12 +124,12 @@ def reverse_operations(value: float):
 
 # Установить n-ый бит числа в единицу.
 def set_nth_bit(value: int, n: int) -> int:
-    return value | (1<<n)
+    return value | (1 << n)
 
 
 # Переключить n-ый бит числа.
 def switch_nth_bit(value: int, n: int) -> int:
-    return value ^ (1<<n)
+    return value ^ (1 << n)
 
 
 # Расставить скобки таким образом, чтобы выражение в задаче было возведено в степень 3.
@@ -155,11 +154,4 @@ def int_to_float(value: int) -> float:
 
 # Вернуть наименьшее целое число без использования условных операторов и встроенных функций.
 def min_raw(first: int, last: int) -> int:
-    k = 0
-    while first > last:
-        k += 1
-        return last
-        k = 1
-        break
-    else:
-        return first
+    return
