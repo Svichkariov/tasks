@@ -59,8 +59,7 @@ def check_32_even_bit_set(value: int) -> bool:
     for i in range(0, 32, 2):
         if value & (1 << i):
             return True
-        else:
-            return False
+    return False
 
 
 # Посчитать количество бит в 32-х битном числе, установленных в ноль.
@@ -90,26 +89,17 @@ def unpack_4_4(first: int, second: int) -> int:
 def clamp(value: float, low: float, high: float) -> float:
     if value <= low:
         return low
-    elif value <= high:
+    if value <= high:
         return value
     return high
 
 
 
 # Ограничить число заданным интервалом. Нижняя граница может быть как меньше, так и больше верхней.
-def clamp_any(value: float, low: float, high: float) -> float:
-    if low < high:
-        if value <= low:
-            return low
-        elif value <= high:
-            return value
-        return high
-    else:
-        if value >= high:
-            return low
-        elif value >= high:
-            return value
-        return high
+def clamp_any(value, low, high):
+    if low > high:
+        low, high = high, low
+    return clamp(value, low, high)
 
 
 # Вернуть True, если число нечетно и входит в интервал от -10 до 10.
