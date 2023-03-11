@@ -22,174 +22,148 @@
 # приводиться все значения. Ее же использовать и в базовом классе. Практически вся функциональность
 # реализуется в базовом классе. Иерархию наследования можно сделать двухуровневой, задача подходит
 # для этого.
+
+
 class LengthUnits:
-    """Базовое значение примем 1 метр"""
+    Variable_NAME: str = "Length Units"
+    Conversion_base: float = 0.0
 
-    def __init__(self, value, lehgth_units='метр', value_basic=1):
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = value_basic
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        self.__value = float(value) * self.Conversion_base if type(value) in (int, float) else value.value
 
-    def __eq__(self, other):
-        if isinstance(other, LengthUnits):
-            return self.value_basic == other.value_basic
-        return False
+    def __eq__(self, another: "LengthUnits"):
+        return self.value == another.value
 
-    def __lt__(self, other):
-        return self.value_basic < other.value_basic
+    def __lt__(self, another: "LengthUnits"):
+        return self.value < another.value
 
-    def __add__(self, other):
-        return f"{self.value_basic + other.value_basic} метров "
+    def __add__(self, another: Union[float, "LengthUnits"]):
+        result = self.__value + another * self.Conversion_base if type(another) in (int, float) \
+            else self.__value + another.value
+        return self.__class__(result / self.Conversion_base)
 
-    def __iadd__(self, other):
-        self.value_basic = self.value_basic + other.value_basic
-        return f"{self.value_basic} метров"
+    def __iadd__(self, another: Union[float, "LengthUnits"]):
+        self.__value += another * self.Conversion_base if type(another) in (int, float) else another.value
+        return self
 
-    def __sub__(self, other):
-        return LengthUnits(self.value_basic - other.value_basic, self.lehgth_units)
+    def __sub__(self, another: Union[float, "LengthUnits"]):
+        result = self.__value - another * self.Conversion_base if type(another) in (int, float) \
+            else self.__value - another.value
+        return self.__class__(result / self.Conversion_base)
 
-    def __isub__(self, other):
-        self.value_basic = self.value_basic - other.value_basic
-        return self.value_basic
+    def __isub__(self, another: Union[float, "LengthUnits"]):
+        self.__value -= another * self.Conversion_base if type(another) in (int, float) else another.value
+        return self
 
-    def __mul__(self, other):
-        return LengthUnits(self.value_basic * other.value_basic, self.lehgth_units)
+    def __mul__(self, value: float):
+        result = self.__value * value
+        return self.__class__(result / self.Conversion_base)
 
-    def __imul__(self, other):
-        self.value_basic = self.value_basic * other.value_basic
-        return self.value_basic
+    def __imul__(self, value: float):
+        self.__value *= value
+        return self
 
-    def __divmod__(self, other):
-        self.value_basic = self.value_basic / other.value_basic
-        return self.value_basic
+    def __truediv__(self, another: Union[float, "LengthUnits"]):
+        result = self.__value / another if type(another) in (int, float) else self.__value / another.value
+        return self.__class__(result / self.Conversion_base) if type(another) in (int, float) else result
 
-    def __idiv__(self, other):
-        self.value_basic = self.value_basic / other.value_basic
-        return self.value_basic
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class Millimeters(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='миллиметров'):
-        super(Millimeters, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value / 1000
+    def __idiv__(self, another: Union[float, "LengthUnits"]):
+        self.__value /= another if type(another) in (int, float) else another.value
+        return self if type(another) in (int, float) else self.value
 
     def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
+        return f"{self.value / self.Conversion_base} {self.Variable_NAME}"
 
-
-class Centimeters(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='сантиметров'):
-        super(Centimeters, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value / 100
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class Meters(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='метров'):
-        super(Meters, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value / 1
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class Kilometers(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='километров'):
-        super(Kilometers, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value * 1000
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class Inches(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='дюймов'):
-        super(Inches, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value * 0.0254
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class Feets(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='футов'):
-        super(Feets, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value * 0.3
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class Yards(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='ярдов'):
-        super(Yards, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value * 0.91
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class Miles(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='миль'):
-        super(Miles, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value * 1.61
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class Fen(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='фэн'):
-        super(Fen, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value / 10000
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class Chi(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='чи'):
-        super(Chi, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value * 0.32
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
-
-
-class In(LengthUnits):
-    def __init__(self, value, value_basic=1, lehgth_units='ин'):
-        super(In, self).__init__(value_basic)
-        self.value = value
-        self.lehgth_units = lehgth_units
-        self.value_basic = self.value * 0.0254
-
-    def __str__(self):
-        return f"{self.value} {self.lehgth_units}"
+    @property
+    def value(self):
+        return self.__value
 
 
 
+
+class Millimeters:
+    Variable_NAME: str = "mm"
+    Conversion_base: float = 1
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class Centimeters:
+    Variable_NAME: str = "cm"
+    Conversion_base: float = 10
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class Meters:
+    Variable_NAME: str = "m"
+    Conversion_base: float = 1000
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class Kilometers:
+    Variable_NAME: str = "km"
+    Conversion_base: float = 1000_000
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class Inches:
+    Variable_NAME: str = "in"
+    Conversion_base: float = 25.4
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class Feets:
+    Variable_NAME: str = "ft"
+    Conversion_base: float = 304.8
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class Yards:
+    Variable_NAME: str = "yd"
+    Conversion_base: float = 914.4
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class Miles:
+    Variable_NAME: str = "mi"
+    Conversion_base: float = 1_609_344
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class Fen:
+    Variable_NAME: str = "fen"
+    Conversion_base: float = 3.33
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class Chi:
+    Variable_NAME: str = "chi"
+    Conversion_base: float = 333
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
+
+
+class In:
+    Variable_NAME: str = "in"
+    Conversion_base: float = 33_300
+
+    def __init__(self, value: Union[float, "LengthUnits"]):
+        super().__init__(value)
